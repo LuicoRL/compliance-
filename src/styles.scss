@@ -4,17 +4,22 @@
 @use "igniteui-angular/theming" as *;
 
 @include core();
-@include typography();
+@include typography($font-family: "Inter", $type-scale: $fluent-type-scale);
 
 $custom-palette: palette(
-  $primary: #09f,
-  $secondary: #72da67,
-  $surface: #222222);
-@include theme($palette: $custom-palette, $schema: $dark-material-schema);
+  $primary: #106EBE,
+  $secondary: #4A5568,
+  $surface: #fff,
+  $error: #C62828,
+  $success: #1B5E20,
+  $warn: #A75D00,
+  $info: #0066CC);
+@include theme($palette: $custom-palette, $schema: $light-fluent-schema, $roundness: 0.5);
 
 body {
   background: var(--ig-surface-500);
   color: var(--ig-surface-500-contrast);
+  --ig-size: var(--ig-size-medium);
 }
 
 html, body {

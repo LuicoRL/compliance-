@@ -134,37 +134,6 @@
   max-width: 100%;
   flex-shrink: 0;
 }
-.guide-body {
-  justify-content: flex-start;
-  align-items: stretch;
-  align-content: flex-start;
-  gap: 12px;
-  position: relative;
-  padding: 24px;
-  width: 100%;
-  min-width: 100%;
-  max-width: 100%;
-}
-.states-list {
-  justify-content: flex-start;
-  align-items: stretch;
-  align-content: flex-start;
-  gap: 8px 0;
-  position: relative;
-  min-width: 50px;
-  min-height: 50px;
-  flex-shrink: 0;
-}
-.state-non-verified {
-  justify-content: flex-start;
-  align-items: center;
-  align-content: flex-start;
-  gap: 0 8px;
-  position: relative;
-  min-width: 50px;
-  min-height: 50px;
-  flex-shrink: 0;
-}
 .verification-form-header {
   flex-wrap: wrap;
   justify-content: space-between;
@@ -187,14 +156,14 @@
   flex-grow: 1;
   flex-basis: 0;
 }
-.form-container-row {
+.form-header-block {
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: stretch;
   align-content: flex-start;
+  gap: 8px 0;
   position: relative;
-  width: 100%;
-  min-width: 100%;
-  max-width: 100%;
+  min-width: 50px;
+  min-height: 50px;
   flex-shrink: 0;
 }
 .fields-grid {
@@ -304,8 +273,6 @@
   width: 100%;
   min-width: 320px;
   max-width: 1000px;
-  flex-grow: 1;
-  flex-shrink: 0;
 }
 .constitucion-ci {
   min-width: 280px;
@@ -317,14 +284,10 @@
   height: max-content;
   flex-shrink: 0;
 }
-.save-action {
-  --foreground: var(--ig-primary-500-contrast);
-  --background: var(--ig-primary-500);
-  --ig-size: var(--ig-size-large);
-  height: max-content;
-  flex-shrink: 0;
-}
 .approved-badge {
   width: max-content;
   height: max-content;
+}
+.kyc-verification-dialog {
+  position: absolute;
 }

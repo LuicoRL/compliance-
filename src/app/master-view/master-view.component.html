@@ -61,21 +61,21 @@
                 Estado de Cuenta
               </p>
             </div>
-            <igx-badge type="success" value="Aprobado" class="approved-badge"></igx-badge>
+            <igx-badge type="error" value="{{estadoCuenta}}" class="approved-badge"></igx-badge>
           </div>
           <div class="column-layout status-details">
             <h5 class="content">
-              Documentación de Cuenta Validada
+              Documentación Pendiente de Envío
             </h5>
             <p class="ig-typography__body-2 verified-description">
-              Tu cuenta de negocio se encuentra activa para procesar transacciones de pago. Todos los archivos de respaldo KYC/KYB han sido guardados y enlazados exitosamente.
+              Por favor, completa el formulario de registro y carga tus archivos KYC/KYB requeridos para iniciar el proceso de verificación de tu cuenta.
             </p>
           </div>
         </div>
       </igx-card-content>
       <igx-card-actions>
         <ng-container igxStart>
-          <button igxButton="contained" type="button" class="descargar-informe">
+          <button igxButton="contained" disabled="true" type="button" class="descargar-informe">
             <igx-icon class="icon_2">
               download
             </igx-icon>
@@ -84,38 +84,6 @@
         </ng-container>
         <ng-container igxEnd></ng-container>
       </igx-card-actions>
-    </igx-card>
-    <igx-card class="verification-status-card">
-      <igx-card-content>
-        <div class="column-layout guide-body">
-          <h6 class="content">
-            Flujo de Verificación del Cliente
-          </h6>
-          <p class="ig-typography__body-2 verified-description">
-            Para auditoría interna de riesgos, los clientes transitan por 3 estados de cumplimiento:
-          </p>
-          <div class="column-layout states-list">
-            <div class="row-layout state-non-verified">
-              <igx-badge type="error" value="No Verificado" class="approved-badge"></igx-badge>
-              <p class="ig-typography__caption verified-description">
-                Cliente recién creado sin carga de PDF.
-              </p>
-            </div>
-            <div class="row-layout state-non-verified">
-              <igx-badge type="warning" value="En Proceso" class="approved-badge"></igx-badge>
-              <p class="ig-typography__caption verified-description">
-                Formulario cargado y PDF guardado en base de datos.
-              </p>
-            </div>
-            <div class="row-layout state-non-verified">
-              <igx-badge type="success" value="Verificado" class="approved-badge"></igx-badge>
-              <p class="ig-typography__caption verified-description">
-                Aprobado por el analista de cumplimiento financiero.
-              </p>
-            </div>
-          </div>
-        </div>
-      </igx-card-content>
     </igx-card>
   </div>
   <div class="row-layout verification-form-header">
@@ -127,90 +95,89 @@
         Formulario de registro y carga documental del cliente para almacenamiento estructurado en PDF.
       </p>
     </div>
-    <button igxButton="contained" type="button" class="tab-kyc-kyb">
+    <button igxButton="contained" type="button" (click)="kYCVerificationDialog.toggle()" class="tab-kyc-kyb">
       <igx-icon class="icon">
         add
       </igx-icon>
       <span>+ Verificar Cliente</span>
     </button>
   </div>
-  <div class="row-layout form-container-row">
-    <form class="column-layout kyckyb-compliance-form">
-      <div class="column-layout states-list">
-        <h6 class="content">
-          Información General de Constitución y Representación
-        </h6>
-        <p class="ig-typography__caption verified-description">
-          Todos los campos son obligatorios para generar el reporte de auditoría oficial en PDF.
-        </p>
-      </div>
-      <div class="column-layout fields-grid">
-        <div class="row-layout form-row-1">
-          <igx-input-group type="border" class="constitucion-ci">
-            <input type="text" [(ngModel)]="value" placeholder="Ej. Testimonio No. 423/2021 o CI 4892120 LP" required="true" igxInput #igxInput />
-            <label igxLabel>Testimonio de constitución (o cédula de identidad si es persona natural)</label>
-            @if (igxInput.validity.valueMissing) {
-              <igx-hint>This field is required</igx-hint>
-            }
-          </igx-input-group>
-          <igx-input-group type="border" class="constitucion-ci">
-            <input type="text" [(ngModel)]="value1" placeholder="Ej. 1020304050" required="true" igxInput #igxInput1 />
-            <label igxLabel>NIT / TAX ID</label>
-            @if (igxInput1.validity.valueMissing) {
-              <igx-hint>This field is required</igx-hint>
-            }
-          </igx-input-group>
+  <igx-dialog [closeOnOutsideSelect]="true" (leftButtonSelect)="kYCVerificationDialog.toggle()" (rightButtonSelect)="kYCVerificationDialog.toggle()" #kYCVerificationDialog class="kyc-verification-dialog">
+    <igx-dialog-title>
+      Verificación KYC/KYB
+    </igx-dialog-title>
+    <ng-container>
+      <form class="column-layout kyckyb-compliance-form">
+        <div class="column-layout form-header-block">
+          <h6 class="content">
+            Información General de Constitución y Representación
+          </h6>
+          <p class="ig-typography__caption verified-description">
+            Todos los campos son obligatorios para generar el reporte de auditoría oficial en PDF.
+          </p>
         </div>
-        <div class="row-layout form-row-1">
-          <igx-input-group type="border" class="constitucion-ci">
-            <input type="text" [(ngModel)]="value2" placeholder="Ej. SEPREC No. 58921-A" required="true" igxInput #igxInput2 />
-            <label igxLabel>Registro de comercio</label>
-            @if (igxInput2.validity.valueMissing) {
-              <igx-hint>This field is required</igx-hint>
-            }
-          </igx-input-group>
-          <igx-input-group type="border" class="constitucion-ci">
-            <input type="text" [(ngModel)]="value3" placeholder="Ej. C.I. 3456789 LP / Pasaporte" required="true" igxInput #igxInput3 />
-            <label igxLabel>Documento de identidad del representante legal</label>
-            @if (igxInput3.validity.valueMissing) {
-              <igx-hint>This field is required</igx-hint>
-            }
-          </igx-input-group>
+        <div class="column-layout fields-grid">
+          <div class="row-layout form-row-1">
+            <igx-input-group type="border" class="constitucion-ci">
+              <input type="text" [(ngModel)]="value" placeholder="Ej. Testimonio No. 423/2021 o CI 4892120 LP" required="true" igxInput #igxInput />
+              <label igxLabel>Testimonio de constitución (o cédula de identidad si es persona natural)</label>
+              @if (igxInput.validity.valueMissing) {
+                <igx-hint>This field is required</igx-hint>
+              }
+            </igx-input-group>
+            <igx-input-group type="border" class="constitucion-ci">
+              <input type="text" [(ngModel)]="value1" placeholder="Ej. 1020304050" required="true" igxInput #igxInput1 />
+              <label igxLabel>NIT / TAX ID</label>
+              @if (igxInput1.validity.valueMissing) {
+                <igx-hint>This field is required</igx-hint>
+              }
+            </igx-input-group>
+          </div>
+          <div class="row-layout form-row-1">
+            <igx-input-group type="border" class="constitucion-ci">
+              <input type="text" [(ngModel)]="value2" placeholder="Ej. SEPREC No. 58921-A" required="true" igxInput #igxInput2 />
+              <label igxLabel>Registro de comercio</label>
+              @if (igxInput2.validity.valueMissing) {
+                <igx-hint>This field is required</igx-hint>
+              }
+            </igx-input-group>
+            <igx-input-group type="border" class="constitucion-ci">
+              <input type="text" [(ngModel)]="value3" placeholder="Ej. C.I. 3456789 LP / Pasaporte" required="true" igxInput #igxInput3 />
+              <label igxLabel>Documento de identidad del representante legal</label>
+              @if (igxInput3.validity.valueMissing) {
+                <igx-hint>This field is required</igx-hint>
+              }
+            </igx-input-group>
+          </div>
+          <div class="row-layout form-row-1">
+            <igx-input-group type="border" class="constitucion-ci">
+              <input type="text" [(ngModel)]="value4" placeholder="Ej. Testimonio Poder No. 120/2022" required="true" igxInput #igxInput4 />
+              <label igxLabel>Poder del representante legal</label>
+              @if (igxInput4.validity.valueMissing) {
+                <igx-hint>This field is required</igx-hint>
+              }
+            </igx-input-group>
+            <igx-input-group type="border" class="constitucion-ci">
+              <input type="text" [(ngModel)]="value5" placeholder="Ej. Cuenta de Ahorros Banco BISA S.A." required="true" igxInput #igxInput5 />
+              <label igxLabel>Certificación bancaria (cuenta de destino)</label>
+              @if (igxInput5.validity.valueMissing) {
+                <igx-hint>This field is required</igx-hint>
+              }
+            </igx-input-group>
+          </div>
+          <div class="row-layout form-row-1">
+            <igx-input-group type="border" class="constitucion-ci">
+              <input type="text" [(ngModel)]="value6" placeholder="Ej. https://misitio.com" igxInput />
+              <label igxLabel>Página web / Redes sociales</label>
+            </igx-input-group>
+          </div>
         </div>
-        <div class="row-layout form-row-1">
-          <igx-input-group type="border" class="constitucion-ci">
-            <input type="text" [(ngModel)]="value4" placeholder="Ej. Testimonio Poder No. 120/2022" required="true" igxInput #igxInput4 />
-            <label igxLabel>Poder del representante legal</label>
-            @if (igxInput4.validity.valueMissing) {
-              <igx-hint>This field is required</igx-hint>
-            }
-          </igx-input-group>
-          <igx-input-group type="border" class="constitucion-ci">
-            <input type="text" [(ngModel)]="value5" placeholder="Ej. Cuenta de Ahorros Banco BISA S.A." required="true" igxInput #igxInput5 />
-            <label igxLabel>Certificación bancaria (cuenta de destino)</label>
-            @if (igxInput5.validity.valueMissing) {
-              <igx-hint>This field is required</igx-hint>
-            }
-          </igx-input-group>
+        <div class="row-layout form-action-buttons">
+          <button igxButton="outlined" type="button" (click)="kYCVerificationDialog.toggle()" class="cancel-action">
+            Limpiar Campos
+          </button>
         </div>
-        <div class="row-layout form-row-1">
-          <igx-input-group type="border" class="constitucion-ci">
-            <input type="text" [(ngModel)]="value6" placeholder="Ej. https://misitio.com" igxInput />
-            <label igxLabel>Página web / Redes sociales</label>
-          </igx-input-group>
-        </div>
-      </div>
-      <div class="row-layout form-action-buttons">
-        <button igxButton="outlined" type="button" class="cancel-action">
-          Limpiar Campos
-        </button>
-        <button igxButton="contained" type="submit" class="save-action">
-          <igx-icon class="icon">
-            send
-          </igx-icon>
-          <span>Enviar</span>
-        </button>
-      </div>
-    </form>
-  </div>
+      </form>
+    </ng-container>
+  </igx-dialog>
 </div>

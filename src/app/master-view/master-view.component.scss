@@ -1,0 +1,330 @@
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+  gap: 24px 0;
+}
+.column-layout {
+  display: flex;
+  flex-direction: column;
+}
+.compliance-workspace {
+  background-color: var(--ig-surface-900);
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+  gap: 32px 0;
+  overflow: auto;
+  position: relative;
+  padding: 48px;
+  min-width: 50px;
+  min-height: 50px;
+  flex-grow: 1;
+  flex-basis: 0;
+}
+.row-layout {
+  display: flex;
+}
+.header-row {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  align-content: flex-start;
+  gap: 16px 24px;
+  position: relative;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.header-title-and-description {
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+  gap: 8px;
+  position: relative;
+  min-width: 320px;
+  flex-grow: 1;
+  flex-basis: 0;
+}
+.header-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  align-content: flex-start;
+  gap: 12px;
+  position: relative;
+  min-width: 240px;
+}
+.tabs-navigation {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: flex-start;
+  gap: 12px;
+  position: relative;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.summary-grid {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+  gap: 24px;
+  position: relative;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.verification-status-card {
+  --background: var(--ig-surface-800);
+  --outline-color: var(--ig-gray-800);
+  --border-radius: 12px;
+  min-width: 320px;
+  max-width: 480px;
+  flex-grow: 1;
+  flex-basis: 0;
+}
+.status-card-body {
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+  gap: 16px;
+  position: relative;
+  padding: 24px;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+}
+.status-row {
+  justify-content: space-between;
+  align-items: center;
+  align-content: flex-start;
+  gap: 8px;
+  position: relative;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.icon-group {
+  justify-content: flex-start;
+  align-items: center;
+  align-content: flex-start;
+  gap: 0 12px;
+  position: relative;
+  min-width: 50px;
+  min-height: 50px;
+}
+.status-details {
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+  gap: 8px;
+  position: relative;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.guide-body {
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+  gap: 12px;
+  position: relative;
+  padding: 24px;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+}
+.states-list {
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+  gap: 8px 0;
+  position: relative;
+  min-width: 50px;
+  min-height: 50px;
+  flex-shrink: 0;
+}
+.state-non-verified {
+  justify-content: flex-start;
+  align-items: center;
+  align-content: flex-start;
+  gap: 0 8px;
+  position: relative;
+  min-width: 50px;
+  min-height: 50px;
+  flex-shrink: 0;
+}
+.verification-form-header {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  align-content: flex-start;
+  gap: 12px 16px;
+  position: relative;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.form-texts {
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+  gap: 4px 0;
+  position: relative;
+  min-width: 320px;
+  flex-grow: 1;
+  flex-basis: 0;
+}
+.form-container-row {
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+  position: relative;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.fields-grid {
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+  gap: 20px 0;
+  position: relative;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.form-row-1 {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 16px;
+  position: relative;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.form-action-buttons {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  align-content: flex-start;
+  gap: 12px 16px;
+  position: relative;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.eyebrow {
+  color: var(--ig-primary-500);
+  height: max-content;
+  min-width: min-content;
+}
+.compliance-portal {
+  height: max-content;
+  min-width: min-content;
+}
+.compliance-subtitle {
+  color: var(--ig-gray-400);
+  max-width: 800px;
+}
+.icon {
+  color: var(--ig-primary-500-contrast);
+}
+.verified-icon-badge {
+  --ig-size: var(--ig-size-medium);
+  --igx-avatar-background: var(--ig-success-100);
+}
+.icon_1 {
+  color: var(--ig-success-500);
+}
+.content {
+  color: var(--ig-gray-100);
+  height: max-content;
+  min-width: min-content;
+}
+.verified-description {
+  color: var(--ig-gray-400);
+  height: max-content;
+  min-width: min-content;
+}
+.icon_2 {
+  color: var(--ig-gray-100);
+}
+.verified-icon-badge::part(base) {
+  --igx-avatar-color: var(--ig-success-500);
+}
+.exportar-reportes {
+  --ig-size: var(--ig-size-medium);
+  height: max-content;
+  flex-shrink: 0;
+}
+.tab-kyc-kyb {
+  --foreground: var(--ig-primary-500-contrast);
+  --background: var(--ig-primary-500);
+  --ig-size: var(--ig-size-medium);
+  height: max-content;
+  flex-shrink: 0;
+}
+.descargar-informe {
+  --foreground: var(--ig-gray-100);
+  --background: var(--ig-gray-800);
+  --ig-size: var(--ig-size-medium);
+  height: max-content;
+}
+.kyckyb-compliance-form {
+  background-color: var(--ig-surface-800);
+  border-color: var(--ig-gray-800);
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 12px;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+  gap: 28px 0;
+  position: relative;
+  padding: 32px;
+  width: 100%;
+  min-width: 320px;
+  max-width: 1000px;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+.user-input {
+  min-width: 280px;
+  flex-grow: 1;
+  flex-basis: 0;
+}
+.cancel-action {
+  --ig-size: var(--ig-size-large);
+  height: max-content;
+  flex-shrink: 0;
+}
+.save-action {
+  --foreground: var(--ig-primary-500-contrast);
+  --background: var(--ig-primary-500);
+  --ig-size: var(--ig-size-large);
+  height: max-content;
+  flex-shrink: 0;
+}
+.approved-badge {
+  width: max-content;
+  height: max-content;
+}

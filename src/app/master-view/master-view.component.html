@@ -146,14 +146,14 @@
       </div>
       <div class="column-layout fields-grid">
         <div class="row-layout form-row-1">
-          <igx-input-group type="border" class="user-input">
+          <igx-input-group type="border" class="constitucion-ci">
             <input type="text" [(ngModel)]="value" placeholder="Ej. Testimonio No. 423/2021 o CI 4892120 LP" required="true" igxInput #igxInput />
             <label igxLabel>Testimonio de constitución (o cédula de identidad si es persona natural)</label>
             @if (igxInput.validity.valueMissing) {
               <igx-hint>This field is required</igx-hint>
             }
           </igx-input-group>
-          <igx-input-group type="border" class="user-input">
+          <igx-input-group type="border" class="constitucion-ci">
             <input type="text" [(ngModel)]="value1" placeholder="Ej. 1020304050" required="true" igxInput #igxInput1 />
             <label igxLabel>NIT / TAX ID</label>
             @if (igxInput1.validity.valueMissing) {
@@ -162,14 +162,14 @@
           </igx-input-group>
         </div>
         <div class="row-layout form-row-1">
-          <igx-input-group type="border" class="user-input">
+          <igx-input-group type="border" class="constitucion-ci">
             <input type="text" [(ngModel)]="value2" placeholder="Ej. SEPREC No. 58921-A" required="true" igxInput #igxInput2 />
             <label igxLabel>Registro de comercio</label>
             @if (igxInput2.validity.valueMissing) {
               <igx-hint>This field is required</igx-hint>
             }
           </igx-input-group>
-          <igx-input-group type="border" class="user-input">
+          <igx-input-group type="border" class="constitucion-ci">
             <input type="text" [(ngModel)]="value3" placeholder="Ej. C.I. 3456789 LP / Pasaporte" required="true" igxInput #igxInput3 />
             <label igxLabel>Documento de identidad del representante legal</label>
             @if (igxInput3.validity.valueMissing) {
@@ -178,14 +178,14 @@
           </igx-input-group>
         </div>
         <div class="row-layout form-row-1">
-          <igx-input-group type="border" class="user-input">
+          <igx-input-group type="border" class="constitucion-ci">
             <input type="text" [(ngModel)]="value4" placeholder="Ej. Testimonio Poder No. 120/2022" required="true" igxInput #igxInput4 />
             <label igxLabel>Poder del representante legal</label>
             @if (igxInput4.validity.valueMissing) {
               <igx-hint>This field is required</igx-hint>
             }
           </igx-input-group>
-          <igx-input-group type="border" class="user-input">
+          <igx-input-group type="border" class="constitucion-ci">
             <input type="text" [(ngModel)]="value5" placeholder="Ej. Cuenta de Ahorros Banco BISA S.A." required="true" igxInput #igxInput5 />
             <label igxLabel>Certificación bancaria (cuenta de destino)</label>
             @if (igxInput5.validity.valueMissing) {
@@ -194,22 +194,10 @@
           </igx-input-group>
         </div>
         <div class="row-layout form-row-1">
-          <igx-input-group type="border" class="user-input">
+          <igx-input-group type="border" class="constitucion-ci">
             <input type="text" [(ngModel)]="value6" placeholder="Ej. https://misitio.com" igxInput />
             <label igxLabel>Página web / Redes sociales</label>
           </igx-input-group>
-          <igx-select type="border" placeholder="Selecciona el estado" required="true" class="user-input">
-            <igx-select-item value="1">
-              No Verificado
-            </igx-select-item>
-            <igx-select-item value="2">
-              En Proceso
-            </igx-select-item>
-            <igx-select-item value="3">
-              Verificado
-            </igx-select-item>
-            <label igxLabel>Estado de Verificación Inicial</label>
-          </igx-select>
         </div>
       </div>
       <div class="row-layout form-action-buttons">
@@ -218,9 +206,9 @@
         </button>
         <button igxButton="contained" type="submit" class="save-action">
           <igx-icon class="icon">
-            picture_as_pdf
+            send
           </igx-icon>
-          <span>Guardar y Generar PDF</span>
+          <span>Enviar</span>
         </button>
       </div>
     </form>

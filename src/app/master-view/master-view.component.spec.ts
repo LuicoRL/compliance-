@@ -1,7 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { IgxButtonDirective, IgxIconComponent, IGX_CARD_DIRECTIVES, IgxAvatarComponent, IgxBadgeComponent, IGX_DIALOG_DIRECTIVES, IGX_INPUT_GROUP_DIRECTIVES } from 'igniteui-angular';
+import { ComplianceRepositoryService } from '../compliance-repository.service';
 import { MasterViewComponent } from './master-view.component';
 
 describe('MasterViewComponent', () => {
@@ -10,7 +8,11 @@ describe('MasterViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MasterViewComponent, NoopAnimationsModule, FormsModule, ReactiveFormsModule, IgxButtonDirective, IgxIconComponent, IGX_CARD_DIRECTIVES, IgxAvatarComponent, IgxBadgeComponent, IGX_DIALOG_DIRECTIVES, IGX_INPUT_GROUP_DIRECTIVES]
+      imports: [MasterViewComponent],
+      providers: [{
+        provide: ComplianceRepositoryService,
+        useValue: { getAll: () => Promise.resolve([]), save: () => Promise.resolve() }
+      }]
     })
     .compileComponents();
 

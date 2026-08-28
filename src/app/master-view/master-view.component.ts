@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { jsPDF } from 'jspdf';
 import { ComplianceRepositoryService } from '../compliance-repository.service';
 import { ApplicationStatus, ComplianceApplication, ComplianceDocument, EMPTY_APPLICATION } from '../compliance.models';
 
@@ -111,8 +110,6 @@ export class MasterViewComponent implements OnInit {
   }
 
   private generateReport(application: ComplianceApplication): Blob {
-    const pdf = new jsPDF();
-    pdf.setFontSize(18); pdf.text('Informe de Cumplimiento', 20, 24); pdf.setFontSize(11);
     const rows = [
       ['Cliente', application.clientName], ['Estado', 'Pendiente'], ['NIT / TAX ID', application.nit],
       ['Constitución / CI', application.constitutionRecord], ['Registro de comercio', application.commercialRegistration],
@@ -120,14 +117,33 @@ export class MasterViewComponent implements OnInit {
       ['Certificación bancaria', application.bankCertification], ['Página web / Redes', application.website || 'No proporcionado'],
       ['Fecha de envío', new Date(application.submittedAt!).toLocaleString('es-BO')]
     ];
-    let y = 38;
-    for (const [label, value] of rows) {
-      pdf.setFont('helvetica', 'bold'); pdf.text(`${label}:`, 20, y); pdf.setFont('helvetica', 'normal');
-      const lines = pdf.splitTextToSize(value, 120); pdf.text(lines, 70, y); y += Math.max(9, lines.length * 6);
-    }
-    pdf.setFont('helvetica', 'bold'); pdf.text('Documentos adjuntos:', 20, y + 4); pdf.setFont('helvetica', 'normal');
-    application.documents.forEach((item, index) => pdf.text(`• ${item.fileName}`, 24, y + 13 + index * 7));
-    return pdf.output('blob');
+    const lines = ['INFORME DE CUMPLIMIENTO', '', ...rows.map(([label, value]) => `${label}: ${value}`), '',
+      'Documentos adjuntos:', ...application.documents.map(item => `- ${item.fileName}`)];
+    return this.createTextPdf(lines);
+  }
+
+  private createTextPdf(lines: string[]): Blob {
+    const clean = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\x20-\x7E]/g, '?').replace(/([\\()])/g, '\\$1');
+    const commands = ['BT', '/F1 16 Tf', '50 790 Td', '20 TL'];
+    lines.forEach((line, index) => commands.push(`${index ? 'T* ' : ''}(${clean(line)}) Tj`));
+    commands.push('ET');
+    const stream = commands.join('\n');
+    const objects = [
+      '<< /Type /Catalog /Pages 2 0 R >>',
+      '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+      '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>',
+      `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`,
+      '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>'
+    ];
+    let pdf = '%PDF-1.4\n';
+    const offsets = [0];
+    objects.forEach((object, index) => { offsets.push(pdf.length); pdf += `${index + 1} 0 obj\n${object}\nendobj\n`; });
+    const xref = pdf.length;
+    pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+    offsets.slice(1).forEach(offset => { pdf += `${offset.toString().padStart(10, '0')} 00000 n \n`; });
+    pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+    return new Blob([pdf], { type: 'application/pdf' });
   }
 
   private downloadBlob(blob: Blob, fileName: string): void {

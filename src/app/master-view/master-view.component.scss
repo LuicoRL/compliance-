@@ -284,6 +284,13 @@
   height: max-content;
   flex-shrink: 0;
 }
+.enviar-action {
+  --foreground: var(--ig-primary-500-contrast);
+  --background: var(--ig-primary-500);
+  --ig-size: var(--ig-size-large);
+  height: max-content;
+  flex-shrink: 0;
+}
 .approved-badge {
   width: max-content;
   height: max-content;

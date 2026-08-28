@@ -1,186 +1,101 @@
-<div class="column-layout compliance-workspace">
-  <div class="row-layout header-row">
-    <div class="column-layout header-title-and-description">
-      <p class="ig-typography__overline eyebrow">
-        MÓDULO DE CUMPLIMIENTO
-      </p>
-      <h3 class="compliance-portal">
-        Portal de Cumplimiento
-      </h3>
-      <p class="compliance-subtitle">
-        Verificación de identidad (KYC/KYB), screening AML e historial transaccional de tus clientes para aprobación regulatoria.
-      </p>
+<main class="workspace">
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">MÓDULO DE CUMPLIMIENTO · DEMO</p>
+      <h1>Portal de Cumplimiento</h1>
+      <p class="subtitle">Registro documental de clientes para revisión y aprobación.</p>
     </div>
-    <div class="row-layout header-actions">
-      <button igxButton="outlined" type="button" class="exportar-reportes">
-        <igx-icon>
-          file_download
-        </igx-icon>
-        <span>Exportar Historial</span>
-      </button>
-      <button igxButton="flat" type="button" class="exportar-reportes">
-        <igx-icon>
-          help_outline
-        </igx-icon>
-        <span>Soporte KYC</span>
-      </button>
-    </div>
-  </div>
-  <div class="row-layout tabs-navigation">
-    <button igxButton="contained" type="button" class="tab-kyc-kyb">
-      <igx-icon class="icon">
-        assignment_ind
-      </igx-icon>
-      <span>Verificación KYC / KYB</span>
-    </button>
-    <button igxButton="outlined" type="button" class="exportar-reportes">
-      <igx-icon>
-        security
-      </igx-icon>
-      <span>AML Screening</span>
-    </button>
-    <button igxButton="outlined" type="button" class="exportar-reportes">
-      <igx-icon>
-        location_on
-      </igx-icon>
-      <span>Screening de direcciones</span>
-    </button>
-  </div>
-  <div class="row-layout summary-grid">
-    <igx-card class="verification-status-card">
-      <igx-card-content>
-        <div class="column-layout status-card-body">
-          <div class="row-layout status-row">
-            <div class="row-layout icon-group">
-              <igx-avatar shape="circle" class="verified-icon-badge">
-                <igx-icon class="icon_1">
-                  verified_user
-                </igx-icon>
-              </igx-avatar>
-              <p class="content">
-                Estado de Cuenta
-              </p>
+    <nav class="mode-switch" aria-label="Cambiar vista de demostración">
+      <button type="button" [class.active]="mode === 'client'" (click)="switchMode('client')">Vista cliente</button>
+      <button type="button" [class.active]="mode === 'admin'" (click)="switchMode('admin')">Vista interna</button>
+    </nav>
+  </header>
+
+  @if (notice) { <div class="alert success">{{ notice }}</div> }
+  @if (error) { <div class="alert error">{{ error }}</div> }
+
+  @if (mode === 'client') {
+    <section class="status-card">
+      <div>
+        <p class="section-label">ESTADO DE CUENTA</p>
+        <h2>{{ application.status === 'NOT_APPROVED' ? 'Documentación pendiente de envío' : application.status === 'PENDING' ? 'Documentación en revisión' : 'Cuenta aprobada' }}</h2>
+        <p>{{ application.status === 'NOT_APPROVED' ? 'Completa el formulario y adjunta los documentos requeridos.' : application.status === 'PENDING' ? 'La empresa está revisando la información enviada.' : 'Tu documentación fue revisada y aprobada.' }}</p>
+      </div>
+      <div class="status-actions">
+        <span class="status-badge" [class]="'status-badge ' + application.status.toLowerCase()">{{ statusLabel }}</span>
+        <button type="button" class="secondary" [disabled]="!application.reportPdf" (click)="downloadReport()">Descargar informe PDF</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div><p class="section-label">SOLICITUD DEL CLIENTE</p><h2>Información y documentación</h2></div>
+        @if (application.status !== 'NOT_APPROVED') { <button type="button" class="text-button" (click)="resetDemo()">Nueva solicitud de demo</button> }
+      </div>
+
+      <form #applicationForm="ngForm" (ngSubmit)="submit(applicationForm)">
+        <fieldset [disabled]="application.status !== 'NOT_APPROVED' || isSaving">
+          <div class="form-grid">
+            <label>Nombre o razón social *<input name="clientName" [(ngModel)]="application.clientName" required placeholder="Ej. Empresa Demo S.R.L." /></label>
+            <label>NIT / TAX ID *<input name="nit" [(ngModel)]="application.nit" required placeholder="Ej. 1020304050" /></label>
+            <label>Testimonio de constitución o CI *<input name="constitutionRecord" [(ngModel)]="application.constitutionRecord" required placeholder="Ej. Testimonio No. 423/2021" /></label>
+            <label>Registro de comercio *<input name="commercialRegistration" [(ngModel)]="application.commercialRegistration" required placeholder="Ej. SEPREC No. 58921-A" /></label>
+            <label>Identidad del representante legal *<input name="representativeDocument" [(ngModel)]="application.representativeDocument" required placeholder="Ej. C.I. 3456789 SC" /></label>
+            <label>Poder del representante legal *<input name="representativePower" [(ngModel)]="application.representativePower" required placeholder="Ej. Poder No. 120/2022" /></label>
+            <label>Certificación bancaria *<input name="bankCertification" [(ngModel)]="application.bankCertification" required placeholder="Ej. Cuenta Banco S.A." /></label>
+            <label>Página web / Redes sociales<input name="website" [(ngModel)]="application.website" placeholder="https://misitio.com" /></label>
+          </div>
+
+          <div class="documents">
+            <div><p class="section-label">ARCHIVOS REQUERIDOS</p><h3>Documentación de respaldo</h3></div>
+            <div class="document-grid">
+              @for (document of requiredDocuments; track document.type) {
+                <label class="upload-card">
+                  <span>{{ document.label }} *</span>
+                  <small>{{ documentName(document.type) || 'PDF, JPG o PNG' }}</small>
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png" (change)="onDocumentSelected($event, document.type, document.label)" />
+                </label>
+              }
             </div>
-            <igx-badge type="error" value="{{estadoCuenta}}" class="approved-badge"></igx-badge>
           </div>
-          <div class="column-layout status-details">
-            <h5 class="content">
-              Documentación Pendiente de Envío
-            </h5>
-            <p class="ig-typography__body-2 verified-description">
-              Por favor, completa el formulario de registro y carga tus archivos KYC/KYB requeridos para iniciar el proceso de verificación de tu cuenta.
-            </p>
-          </div>
-        </div>
-      </igx-card-content>
-      <igx-card-actions>
-        <ng-container igxStart>
-          <button igxButton="contained" disabled="true" type="button" class="descargar-informe">
-            <igx-icon class="icon_2">
-              download
-            </igx-icon>
-            <span>Descargar Informe PDF</span>
-          </button>
-        </ng-container>
-        <ng-container igxEnd></ng-container>
-      </igx-card-actions>
-    </igx-card>
-  </div>
-  <div class="row-layout verification-form-header">
-    <div class="column-layout form-texts">
-      <h5 class="content">
-        Verificación de tus Clientes (KYC/KYB)
-      </h5>
-      <p class="ig-typography__body-2 verified-description">
-        Formulario de registro y carga documental del cliente para almacenamiento estructurado en PDF.
-      </p>
-    </div>
-    <button igxButton="contained" type="button" (click)="kYCVerificationDialog.toggle()" class="tab-kyc-kyb">
-      <igx-icon class="icon">
-        add
-      </igx-icon>
-      <span>+ Verificar Cliente</span>
-    </button>
-  </div>
-  <igx-dialog [closeOnOutsideSelect]="true" (leftButtonSelect)="kYCVerificationDialog.toggle()" (rightButtonSelect)="kYCVerificationDialog.toggle()" #kYCVerificationDialog class="kyc-verification-dialog">
-    <igx-dialog-title>
-      Verificación KYC/KYB
-    </igx-dialog-title>
-    <ng-container>
-      <form class="column-layout kyckyb-compliance-form">
-        <div class="column-layout form-header-block">
-          <h6 class="content">
-            Información General de Constitución y Representación
-          </h6>
-          <p class="ig-typography__caption verified-description">
-            Todos los campos son obligatorios para generar el reporte de auditoría oficial en PDF.
-          </p>
-        </div>
-        <div class="column-layout fields-grid">
-          <div class="row-layout form-row-1">
-            <igx-input-group type="border" class="constitucion-ci">
-              <input type="text" [(ngModel)]="value" placeholder="Ej. Testimonio No. 423/2021 o CI 4892120 LP" required="true" igxInput #igxInput />
-              <label igxLabel>Testimonio de constitución (o cédula de identidad si es persona natural)</label>
-              @if (igxInput.validity.valueMissing) {
-                <igx-hint>This field is required</igx-hint>
-              }
-            </igx-input-group>
-            <igx-input-group type="border" class="constitucion-ci">
-              <input type="text" [(ngModel)]="value1" placeholder="Ej. 1020304050" required="true" igxInput #igxInput1 />
-              <label igxLabel>NIT / TAX ID</label>
-              @if (igxInput1.validity.valueMissing) {
-                <igx-hint>This field is required</igx-hint>
-              }
-            </igx-input-group>
-          </div>
-          <div class="row-layout form-row-1">
-            <igx-input-group type="border" class="constitucion-ci">
-              <input type="text" [(ngModel)]="value2" placeholder="Ej. SEPREC No. 58921-A" required="true" igxInput #igxInput2 />
-              <label igxLabel>Registro de comercio</label>
-              @if (igxInput2.validity.valueMissing) {
-                <igx-hint>This field is required</igx-hint>
-              }
-            </igx-input-group>
-            <igx-input-group type="border" class="constitucion-ci">
-              <input type="text" [(ngModel)]="value3" placeholder="Ej. C.I. 3456789 LP / Pasaporte" required="true" igxInput #igxInput3 />
-              <label igxLabel>Documento de identidad del representante legal</label>
-              @if (igxInput3.validity.valueMissing) {
-                <igx-hint>This field is required</igx-hint>
-              }
-            </igx-input-group>
-          </div>
-          <div class="row-layout form-row-1">
-            <igx-input-group type="border" class="constitucion-ci">
-              <input type="text" [(ngModel)]="value4" placeholder="Ej. Testimonio Poder No. 120/2022" required="true" igxInput #igxInput4 />
-              <label igxLabel>Poder del representante legal</label>
-              @if (igxInput4.validity.valueMissing) {
-                <igx-hint>This field is required</igx-hint>
-              }
-            </igx-input-group>
-            <igx-input-group type="border" class="constitucion-ci">
-              <input type="text" [(ngModel)]="value5" placeholder="Ej. Cuenta de Ahorros Banco BISA S.A." required="true" igxInput #igxInput5 />
-              <label igxLabel>Certificación bancaria (cuenta de destino)</label>
-              @if (igxInput5.validity.valueMissing) {
-                <igx-hint>This field is required</igx-hint>
-              }
-            </igx-input-group>
-          </div>
-          <div class="row-layout form-row-1">
-            <igx-input-group type="border" class="constitucion-ci">
-              <input type="text" [(ngModel)]="value6" placeholder="Ej. https://misitio.com" igxInput />
-              <label igxLabel>Página web / Redes sociales</label>
-            </igx-input-group>
-          </div>
-        </div>
-        <div class="row-layout form-action-buttons">
-          <button igxButton="outlined" type="button" (click)="kYCVerificationDialog.toggle()" class="cancel-action">
-            Limpiar Campos
-          </button>
-          <button igxButton="contained" type="button" class="enviar-action">
-            Enviar
-          </button>
-        </div>
+        </fieldset>
+        @if (application.status === 'NOT_APPROVED') {
+          <div class="form-actions"><button type="submit" class="primary" [disabled]="isSaving">{{ isSaving ? 'Guardando…' : 'Enviar' }}</button></div>
+        }
       </form>
-    </ng-container>
-  </igx-dialog>
-</div>
+    </section>
+  } @else {
+    <section class="admin-layout">
+      <aside class="panel applications-list">
+        <div><p class="section-label">BANDEJA INTERNA</p><h2>Clientes</h2></div>
+        <input class="search" [(ngModel)]="searchTerm" placeholder="Buscar por cliente, NIT o estado" />
+        @if (!filteredApplications.length) { <p class="empty">Todavía no existen solicitudes.</p> }
+        @for (item of filteredApplications; track item.id) {
+          <button type="button" class="application-row" [class.selected]="selectedApplication?.id === item.id" (click)="selectedApplication = item">
+            <span><strong>{{ item.clientName }}</strong><small>NIT {{ item.nit }}</small></span>
+            <span class="status-badge compact" [class]="'status-badge compact ' + item.status.toLowerCase()">{{ getStatusLabel(item.status) }}</span>
+          </button>
+        }
+      </aside>
+
+      <section class="panel review-panel">
+        @if (selectedApplication; as selected) {
+          <div class="section-heading"><div><p class="section-label">REVISIÓN</p><h2>{{ selected.clientName }}</h2><p>NIT {{ selected.nit }}</p></div><span class="status-badge" [class]="'status-badge ' + selected.status.toLowerCase()">{{ getStatusLabel(selected.status) }}</span></div>
+          <dl class="details">
+            <div><dt>Constitución / CI</dt><dd>{{ selected.constitutionRecord }}</dd></div>
+            <div><dt>Registro de comercio</dt><dd>{{ selected.commercialRegistration }}</dd></div>
+            <div><dt>Representante legal</dt><dd>{{ selected.representativeDocument }}</dd></div>
+            <div><dt>Poder legal</dt><dd>{{ selected.representativePower }}</dd></div>
+            <div><dt>Certificación bancaria</dt><dd>{{ selected.bankCertification }}</dd></div>
+            <div><dt>Fecha de envío</dt><dd>{{ selected.submittedAt | date:'medium' }}</dd></div>
+          </dl>
+          <div class="downloads"><h3>Archivos enviados</h3>
+            @for (document of selected.documents; track document.id) { <button type="button" class="file-button" (click)="downloadDocument(document)"><span>{{ document.fileName }}</span><small>{{ document.size / 1024 | number:'1.0-0' }} KB · Descargar</small></button> }
+            <button type="button" class="file-button report" [disabled]="!selected.reportPdf" (click)="downloadReport(selected)"><span>Informe de cumplimiento</span><small>PDF generado · Descargar</small></button>
+          </div>
+          <div class="review-actions"><button type="button" class="primary approve" [disabled]="selected.status === 'APPROVED'" (click)="approve(selected)">{{ selected.status === 'APPROVED' ? 'Cliente aprobado' : 'Aprobar cliente' }}</button></div>
+        } @else { <div class="empty-state"><h2>Selecciona un cliente</h2><p>Abre una solicitud para revisar sus datos y documentación.</p></div> }
+      </section>
+    </section>
+  }
+</main>

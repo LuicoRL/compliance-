@@ -38,6 +38,11 @@ export class ComplianceRepositoryService {
       request.onerror = () => reject(request.error);
     });
     database.close();
-    return applications.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    return applications.map(application => ({
+      ...application,
+      baseDocumentationReviewed: application.baseDocumentationReviewed ?? false,
+      followUpFormsEnabled: application.followUpFormsEnabled ?? false,
+      documents: application.documents ?? []
+    })).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
 }

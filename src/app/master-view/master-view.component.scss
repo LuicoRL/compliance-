@@ -49,4 +49,27 @@ input:focus { border-color: #4aa7ea; box-shadow: 0 0 0 3px #2b86c72b; }
 .file-button { display: flex; flex-direction: column; gap: 5px; padding: 13px; overflow: hidden; border: 1px solid #30465f; border-radius: 8px; color: #d9e8fa; text-align: left; background: #14243a; }
 .file-button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.file-button small { color: #70b7ea; }.file-button.report { border-color: #28699b; }
 .approve { background: #20723e; border-color: #359557; }.empty-state { display: grid; min-height: 420px; place-content: center; text-align: center; gap: 7px; }
+.follow-up-panel { border-top: 3px solid #d6a72e; }
+.follow-up-panel .section-heading p { max-width: 760px; }
+.follow-up-form { margin-top: 26px; padding: 22px; border: 1px solid #30445e; border-radius: 12px; background: #0d1828; }
+.enhanced-form { border-color: #593844; }
+.level-heading { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.level-heading > span { display: grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 50%; font-weight: 850; }
+.level-heading p { color: #8fa1b8; }
+.intermediate-level > span { color: #ffe69a; background: #624c0c; }
+.enhanced-level > span { color: #ffb4b4; background: #65262e; }
+.inline-alert { margin-bottom: 0; }
+.qualification-card { margin-top: 26px; padding: 20px; border: 1px solid #36506d; border-radius: 12px; background: #0d1828; }
+.qualification-card > div:first-child > p:last-child { margin-top: 7px; color: #8fa1b8; }
+.qualification-steps { display: grid; gap: 10px; margin-top: 17px; }
+.review-check, .eligibility-check, .follow-up-state { display: flex; align-items: center; gap: 13px; width: 100%; padding: 14px; border: 1px solid #30445e; border-radius: 9px; color: #dce7f5; text-align: left; background: #132238; }
+.review-check span:last-child, .eligibility-check span:last-child, .follow-up-state { flex-direction: column; align-items: flex-start; }
+.review-check span:last-child, .eligibility-check span:last-child { display: flex; gap: 3px; }
+.review-check small, .eligibility-check small, .follow-up-state small { color: #8fa1b8; }
+.check-box { display: grid; width: 28px; height: 28px; flex: 0 0 28px; place-items: center; border: 1px solid #55708e; border-radius: 6px; }
+.review-check.checked, .eligibility-check.enabled { border-color: #358a51; background: #153522; }
+.review-check.checked .check-box { border-color: #48a968; color: #a9f2bd; }
+.eligibility-check input { width: 20px; height: 20px; flex: 0 0 20px; accent-color: #2d9b57; }
+.eligibility-check.disabled { opacity: .55; cursor: not-allowed; }
+.follow-up-state { color: #ffe69a; background: #332b15; border-color: #68571e; }
 @media (max-width: 850px) { .workspace { padding: 24px; }.topbar, .status-card { align-items: stretch; flex-direction: column; }.mode-switch { align-self: flex-start; }.status-actions { justify-content: flex-start; flex-wrap: wrap; }.form-grid, .document-grid, .admin-layout, .details, .downloads { grid-template-columns: 1fr; } }

@@ -23,7 +23,6 @@
       </div>
       <div class="status-actions">
         <span class="status-badge" [class]="'status-badge ' + application.status.toLowerCase()">{{ statusLabel }}</span>
-        <button type="button" class="secondary" [disabled]="!application.reportPdf" (click)="downloadReport()">Descargar informe PDF</button>
       </div>
     </section>
 
@@ -64,6 +63,54 @@
         }
       </form>
     </section>
+
+    @if (application.followUpFormsEnabled) {
+      <section class="panel follow-up-panel">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">DOCUMENTACIÓN ADICIONAL SOLICITADA</p>
+            <h2>Formularios de seguimiento</h2>
+            <p>La empresa determinó que estos niveles aplican a tu evaluación. Tu cuenta permanecerá Pendiente durante la revisión.</p>
+          </div>
+          <span class="status-badge pending">Pendiente</span>
+        </div>
+
+        @if (application.followUpFormsSubmittedAt) {
+          <div class="alert success inline-alert">Los formularios adicionales fueron enviados y están en revisión.</div>
+        }
+
+        <fieldset [disabled]="!!application.followUpFormsSubmittedAt || isSaving">
+          <section class="follow-up-form">
+            <div class="level-heading intermediate-level"><span>1</span><div><p class="section-label">NIVEL INTERMEDIO</p><h3>Cliente estándar / regional</h3><p>Documentación adicional a la solicitud básica.</p></div></div>
+            <div class="document-grid">
+              @for (document of intermediateDocuments; track document.type) {
+                <label class="upload-card">
+                  <span>{{ document.label }} *</span>
+                  <small>{{ documentName(document.type) || 'PDF, JPG o PNG' }}</small>
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png" (change)="onDocumentSelected($event, document.type, document.label)" />
+                </label>
+              }
+            </div>
+          </section>
+
+          <section class="follow-up-form enhanced-form">
+            <div class="level-heading enhanced-level"><span>2</span><div><p class="section-label">NIVEL REFORZADO · EDD</p><h3>Evaluación de riesgo reforzada</h3><p>Los documentos marcados “si aplica” son opcionales.</p></div></div>
+            <div class="document-grid">
+              @for (document of enhancedDocuments; track document.type) {
+                <label class="upload-card">
+                  <span>{{ document.label }}{{ document.required ? ' *' : ' (si aplica)' }}</span>
+                  <small>{{ documentName(document.type) || 'PDF, JPG o PNG' }}</small>
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png" (change)="onDocumentSelected($event, document.type, document.label)" />
+                </label>
+              }
+            </div>
+          </section>
+        </fieldset>
+        @if (!application.followUpFormsSubmittedAt) {
+          <div class="form-actions"><button type="button" class="primary" [disabled]="isSaving" (click)="submitFollowUpForms()">{{ isSaving ? 'Guardando…' : 'Enviar formularios adicionales' }}</button></div>
+        }
+      </section>
+    }
   } @else {
     <section class="admin-layout">
       <aside class="panel applications-list">
@@ -93,7 +140,25 @@
             @for (document of selected.documents; track document.id) { <button type="button" class="file-button" (click)="downloadDocument(document)"><span>{{ document.fileName }}</span><small>{{ document.size / 1024 | number:'1.0-0' }} KB · Descargar</small></button> }
             <button type="button" class="file-button report" [disabled]="!selected.reportPdf" (click)="downloadReport(selected)"><span>Informe de cumplimiento</span><small>PDF generado · Descargar</small></button>
           </div>
-          <div class="review-actions"><button type="button" class="primary approve" [disabled]="selected.status === 'APPROVED'" (click)="approve(selected)">{{ selected.status === 'APPROVED' ? 'Cliente aprobado' : 'Aprobar cliente' }}</button></div>
+          <section class="qualification-card">
+            <div><p class="section-label">EVALUACIÓN INTERNA</p><h3>Escalamiento documental</h3><p>Revisa primero la documentación básica. Después, habilita los dos formularios adicionales únicamente cuando correspondan al cliente.</p></div>
+            <div class="qualification-steps">
+              <button type="button" class="review-check" [class.checked]="selected.baseDocumentationReviewed" [disabled]="selected.baseDocumentationReviewed || selected.status === 'APPROVED'" (click)="markBaseDocumentationReviewed(selected)">
+                <span class="check-box">{{ selected.baseDocumentationReviewed ? '✓' : '1' }}</span>
+                <span><strong>{{ selected.baseDocumentationReviewed ? 'Documentación base revisada' : 'Marcar documentación base como revisada' }}</strong><small>Este paso mantiene el estado Pendiente.</small></span>
+              </button>
+              <label class="eligibility-check" [class.enabled]="selected.followUpFormsEnabled" [class.disabled]="!selected.baseDocumentationReviewed || !!selected.followUpFormsSubmittedAt">
+                <input type="checkbox" [checked]="selected.followUpFormsEnabled" [disabled]="!selected.baseDocumentationReviewed || !!selected.followUpFormsSubmittedAt || selected.status === 'APPROVED'" (change)="setFollowUpEligibility(selected, $any($event.target).checked)" />
+                <span><strong>Aplican formularios Intermedio y Reforzado</strong><small>Actívalo solo si la evaluación del empleado determina que son necesarios.</small></span>
+              </label>
+              @if (selected.followUpFormsEnabled) {
+                <div class="follow-up-state"><strong>{{ selected.followUpFormsSubmittedAt ? 'Formularios adicionales recibidos' : 'Esperando formularios adicionales del cliente' }}</strong><small>El estado de la cuenta continúa Pendiente.</small></div>
+              }
+            </div>
+          </section>
+          <div class="review-actions">
+            <button type="button" class="primary approve" [disabled]="!canApprove(selected)" (click)="approve(selected)">{{ selected.status === 'APPROVED' ? 'Cliente aprobado' : 'Aprobar cliente definitivamente' }}</button>
+          </div>
         } @else { <div class="empty-state"><h2>Selecciona un cliente</h2><p>Abre una solicitud para revisar sus datos y documentación.</p></div> }
       </section>
     </section>

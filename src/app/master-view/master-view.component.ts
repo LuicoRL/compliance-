@@ -26,6 +26,21 @@ export class MasterViewComponent implements OnInit {
     { type: 'representative-power', label: 'Poder del representante legal' },
     { type: 'bank', label: 'Certificación bancaria' }
   ];
+  readonly intermediateDocuments = [
+    { type: 'intermediate-operating-license', label: 'Licencia de Funcionamiento', required: true },
+    { type: 'intermediate-ubo-identities', label: 'Identidad de accionistas / UBOs (participación ≥10%)', required: true },
+    { type: 'intermediate-org-chart', label: 'Organigrama societario', required: true },
+    { type: 'intermediate-commercial-evidence', label: 'Evidencia comercial / página web', required: true }
+  ];
+  readonly enhancedDocuments = [
+    { type: 'enhanced-financial-statements', label: 'Estados financieros', required: false },
+    { type: 'enhanced-operating-flow', label: 'Flujo operativo / modelo de negocio', required: true },
+    { type: 'enhanced-commercial-contracts', label: 'Contratos comerciales relevantes', required: false },
+    { type: 'enhanced-aml-manual', label: 'Manual AML/CFT', required: false },
+    { type: 'enhanced-regulatory-licenses', label: 'Licencias regulatorias del rubro', required: false },
+    { type: 'enhanced-submerchants', label: 'Información de subcomercios / agregador', required: false },
+    { type: 'enhanced-pep-declaration', label: 'Declaración de PEP', required: true }
+  ];
 
   constructor(private readonly repository: ComplianceRepositoryService) {}
 
@@ -95,6 +110,45 @@ export class MasterViewComponent implements OnInit {
     this.notice = `${application.clientName} fue aprobado.`;
   }
 
+  async markBaseDocumentationReviewed(application: ComplianceApplication): Promise<void> {
+    application.baseDocumentationReviewed = true;
+    application.baseDocumentationReviewedAt = new Date().toISOString();
+    await this.saveInternalChange(application, 'Documentación base revisada. El cliente continúa Pendiente.');
+  }
+
+  async setFollowUpEligibility(application: ComplianceApplication, enabled: boolean): Promise<void> {
+    application.followUpFormsEnabled = enabled;
+    application.followUpFormsEnabledAt = enabled ? new Date().toISOString() : undefined;
+    await this.saveInternalChange(application, enabled
+      ? 'Formularios Intermedio y Reforzado habilitados para el cliente.'
+      : 'Formularios adicionales deshabilitados.');
+  }
+
+  async submitFollowUpForms(): Promise<void> {
+    this.error = ''; this.notice = '';
+    const required = [...this.intermediateDocuments, ...this.enhancedDocuments].filter(item => item.required);
+    const missing = required.filter(item => !this.documentName(item.type));
+    if (missing.length) {
+      this.error = `Faltan documentos obligatorios: ${missing.map(item => item.label).join(', ')}.`;
+      return;
+    }
+    this.isSaving = true;
+    try {
+      this.application.followUpFormsSubmittedAt = new Date().toISOString();
+      this.application.status = 'PENDING';
+      await this.repository.save(this.application);
+      await this.refreshApplications();
+      this.notice = 'Formularios adicionales enviados. Tu cuenta continúa Pendiente mientras se revisan.';
+    } catch {
+      this.error = 'No se pudieron guardar los formularios adicionales.';
+    } finally { this.isSaving = false; }
+  }
+
+  canApprove(application: ComplianceApplication): boolean {
+    return application.status !== 'APPROVED' && application.baseDocumentationReviewed &&
+      (!application.followUpFormsEnabled || Boolean(application.followUpFormsSubmittedAt));
+  }
+
   downloadDocument(document: ComplianceDocument): void { this.downloadBlob(document.content, document.fileName); }
   downloadReport(application: ComplianceApplication = this.application): void {
     if (application.reportPdf) this.downloadBlob(application.reportPdf, `informe-${this.safeFileName(application.clientName)}.pdf`);
@@ -107,6 +161,15 @@ export class MasterViewComponent implements OnInit {
   private async refreshApplications(loadCurrent = true): Promise<void> {
     this.applications = await this.repository.getAll();
     if (loadCurrent && this.applications.length) this.application = this.applications[0];
+  }
+
+  private async saveInternalChange(application: ComplianceApplication, message: string): Promise<void> {
+    application.status = 'PENDING';
+    await this.repository.save(application);
+    if (this.application.id === application.id) this.application = application;
+    this.selectedApplication = application;
+    await this.refreshApplications(false);
+    this.notice = message;
   }
 
   private generateReport(application: ComplianceApplication): Blob {

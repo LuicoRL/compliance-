@@ -23,6 +23,11 @@ export interface ComplianceApplication {
   createdAt: string;
   submittedAt?: string;
   reviewedAt?: string;
+  baseDocumentationReviewed: boolean;
+  baseDocumentationReviewedAt?: string;
+  followUpFormsEnabled: boolean;
+  followUpFormsEnabledAt?: string;
+  followUpFormsSubmittedAt?: string;
   documents: ComplianceDocument[];
   reportPdf?: Blob;
 }
@@ -31,5 +36,6 @@ export const EMPTY_APPLICATION = (): ComplianceApplication => ({
   id: crypto.randomUUID(), clientName: '', constitutionRecord: '', nit: '',
   commercialRegistration: '', representativeDocument: '', representativePower: '',
   bankCertification: '', website: '', status: 'NOT_APPROVED',
-  createdAt: new Date().toISOString(), documents: []
+  createdAt: new Date().toISOString(), documents: [],
+  baseDocumentationReviewed: false, followUpFormsEnabled: false
 });

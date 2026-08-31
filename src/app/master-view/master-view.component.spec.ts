@@ -24,4 +24,24 @@ describe('MasterViewComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('keeps the client pending when follow-up forms are enabled', async () => {
+    component.application.status = 'PENDING';
+    component.application.baseDocumentationReviewed = true;
+
+    await component.setFollowUpEligibility(component.application, true);
+
+    expect(component.application.status).toBe('PENDING');
+    expect(component.application.followUpFormsEnabled).toBe(true);
+  });
+
+  it('requires applicable follow-up forms before final approval', () => {
+    component.application.status = 'PENDING';
+    component.application.baseDocumentationReviewed = true;
+    component.application.followUpFormsEnabled = true;
+
+    expect(component.canApprove(component.application)).toBe(false);
+    component.application.followUpFormsSubmittedAt = new Date().toISOString();
+    expect(component.canApprove(component.application)).toBe(true);
+  });
 });

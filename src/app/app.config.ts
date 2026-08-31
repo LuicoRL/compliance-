@@ -1,6 +1,4 @@
-import { ApplicationConfig, EnvironmentProviders, ErrorHandler, Provider, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
-import { BrowserModule, HammerModule } from '@angular/platform-browser';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { ApplicationConfig, EnvironmentProviders, ErrorHandler, Provider, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { environment } from '../environments/environment';
@@ -12,9 +10,7 @@ import { GlobalErrorHandlerService } from './error-routing/error/global-error-ha
 // { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig }
 const providers: (EnvironmentProviders | Provider)[] = [
   provideZoneChangeDetection({ eventCoalescing: true }),
-  provideRouter(routes),
-  importProvidersFrom(BrowserModule, HammerModule),
-  provideAnimations()
+  provideRouter(routes)
 ];
 
 if (environment.production) {

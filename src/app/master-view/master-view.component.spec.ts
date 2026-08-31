@@ -1,7 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { IgxButtonDirective, IgxIconComponent, IGX_CARD_DIRECTIVES, IgxAvatarComponent, IgxBadgeComponent, IGX_INPUT_GROUP_DIRECTIVES, IGX_SELECT_DIRECTIVES } from 'igniteui-angular';
+import { ComplianceRepositoryService } from '../compliance-repository.service';
 import { MasterViewComponent } from './master-view.component';
 
 describe('MasterViewComponent', () => {
@@ -10,7 +8,11 @@ describe('MasterViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MasterViewComponent, NoopAnimationsModule, FormsModule, ReactiveFormsModule, IgxButtonDirective, IgxIconComponent, IGX_CARD_DIRECTIVES, IgxAvatarComponent, IgxBadgeComponent, IGX_INPUT_GROUP_DIRECTIVES, IGX_SELECT_DIRECTIVES]
+      imports: [MasterViewComponent],
+      providers: [{
+        provide: ComplianceRepositoryService,
+        useValue: { getAll: () => Promise.resolve([]), save: () => Promise.resolve() }
+      }]
     })
     .compileComponents();
 
@@ -21,5 +23,25 @@ describe('MasterViewComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('keeps the client pending when follow-up forms are enabled', async () => {
+    component.application.status = 'PENDING';
+    component.application.baseDocumentationReviewed = true;
+
+    await component.setFollowUpEligibility(component.application, true);
+
+    expect(component.application.status).toBe('PENDING');
+    expect(component.application.followUpFormsEnabled).toBe(true);
+  });
+
+  it('requires applicable follow-up forms before final approval', () => {
+    component.application.status = 'PENDING';
+    component.application.baseDocumentationReviewed = true;
+    component.application.followUpFormsEnabled = true;
+
+    expect(component.canApprove(component.application)).toBe(false);
+    component.application.followUpFormsSubmittedAt = new Date().toISOString();
+    expect(component.canApprove(component.application)).toBe(true);
   });
 });
